@@ -1,0 +1,2 @@
+date,backend_status,frontend_status,mongo_status,cron_0600,cron_2330,ai_chat_status,translate_status,payments_success_rate,new_users,new_vip,revenue,incidents,actions_taken,owner
+2026-04-28,OK,OK,OK,OK,OK,OK,OK,100%,0,0,0,none,initial setup check,admin

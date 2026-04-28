@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "front/index.html", "use": "@vercel/static" },
+    { "src": "site-logo.png", "use": "@vercel/static" },
+    { "src": "apple-touch-icon.png", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/site-logo\\.png", "dest": "/site-logo.png" },
+    { "src": "/apple-touch-icon\\.png", "dest": "/apple-touch-icon.png" },
+    { "src": "/(.*)", "dest": "/front/index.html" }
+  ]
+}
