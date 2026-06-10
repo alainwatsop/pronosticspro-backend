@@ -6,16 +6,10 @@ const CINETPAY_API_KEY  = process.env.CINETPAY_API_KEY;
 const CINETPAY_SITE_ID  = process.env.CINETPAY_SITE_ID;
 const CINETPAY_BASE_URL = 'https://api-checkout.cinetpay.com/v2';
 
-// Variables pour la Solution 3 (Payout automatique)
-const CINETPAY_PAYOUT_KEY = process.env.CINETPAY_PAYOUT_KEY;
-const PARTNER_NUMBER      = process.env.PARTNER_MOBILE_MONEY_NUMBER; 
-const PARTNER_PREFIX      = process.env.PARTNER_MOBILE_MONEY_PREFIX; // ex: 'OM' ou 'MOMO'
-
-// Les montants de base des abonnements
 const PLANS = {
-  starter: { label: 'VIP Starter',  amount: 5000,  currency: 'XAF', durationDays: 30  }, // 5% = 250 XAF
-  expert:  { label: 'VIP Expert',   amount: 15000, currency: 'XAF', durationDays: 30  }, // 5% = 750 XAF
-  pro:     { label: 'VIP Pro',      amount: 35000, currency: 'XAF', durationDays: 90  }, // 5% = 1750 XAF
+  starter: { label: 'VIP Starter',  amount: 5000,  currency: 'XAF', durationDays: 30  },
+  expert:  { label: 'VIP Expert',   amount: 15000, currency: 'XAF', durationDays: 30  },
+  pro:     { label: 'VIP Pro',      amount: 35000, currency: 'XAF', durationDays: 90  },
 };
 
 /**
@@ -104,39 +98,6 @@ async function handlePaymentNotification(body) {
     'vip.startDate': startDate,
     'vip.endDate':   endDate,
   });
-
-  // 🚀 LOGIQUE DE TRANSFERT AUTOMATIQUE À 5%
-  if (CINETPAY_PAYOUT_KEY && PARTNER_NUMBER) {
-    try {
-      // Calcul automatique des 5% du montant payé
-      const payoutAmount = Math.round(planData.amount * 0.05);
-      
-      console.log(`⏳ Déclenchement du transfert de 5% (${payoutAmount} XAF) pour le partenaire...`);
-      
-      const payoutPayload = {
-        apikey: CINETPAY_PAYOUT_KEY,
-        payout_id: `PAYOUT_${transaction_id}_${Date.now()}`,
-        amount: payoutAmount,
-        currency: planData.currency,
-        prefix: PARTNER_PREFIX,
-        phone_number: PARTNER_NUMBER,
-        description: `Commission 5% PronosticsPro - Plan ${plan}`
-      };
-
-      // Appel de l'API de virement CinetPay
-      const payoutRes = await axios.post('https://api-payout.cinetpay.com/v1/payout/transfer', payoutPayload);
-      
-      if (payoutRes.data && payoutRes.data.code === '200') {
-        console.log(`✅ Transfert de 5% réussi vers le numéro ${PARTNER_NUMBER}`);
-      } else {
-        console.error(`⚠️ Échec de la réponse du virement CinetPay :`, payoutRes.data);
-      }
-    } catch (payoutError) {
-      console.error(`❌ Erreur lors du transfert automatique :`, payoutError.message);
-    }
-  } else {
-    console.log("ℹ️ Transfert automatique ignoré : Variables de virement manquantes.");
-  }
 
   return { success: true, userId, plan, endDate };
 }
