@@ -56,8 +56,8 @@ cron.schedule('0 6 * * *',   () => runDailyUpdate().catch(console.error),    { t
 cron.schedule('30 23 * * *', () => verifyResults().catch(console.error),     { timezone: TZ });
 cron.schedule('0 3 * * 1',   () => weeklyMaintenance().catch(console.error), { timezone: TZ });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 PronosticsPro API – port ${PORT} | env: ${process.env.NODE_ENV || 'development'}\n`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
 });
 
 module.exports = app;
